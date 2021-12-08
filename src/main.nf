@@ -41,7 +41,7 @@ process conversion_FASTQ {
     publishDir "data/FastQ/"
     
     input:
-    tuple val(${sraid}), file("${sraid}.sra") into SRAFiles
+    tuple val(sraid), file("${sraid}.sra") into SRAFiles
     
     output:
     tuple val(${sraid}), file("*1.fastq.gz"), file("*2.fastq.gz") into FASTQ_files, FASTQ_files_qc
