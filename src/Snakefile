@@ -1,4 +1,4 @@
-// Ce workflow a pour objectif de réaliser une analyse de séquences "RNA-seq", afin d'étudier l'expression différentielle de l'ensemble des gènes de nos échantillons. Il est écrit pour effectuer cette analyse sur des données brutes "SRA" spécifiques, disponibles sur un dépôt du ncbi (lien :https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRP017413&o=acc_s%3Aa).
+# Ce workflow a pour objectif de réaliser une analyse de séquences "RNA-seq", afin d'étudier l'expression différentielle de l'ensemble des gènes de nos échantillons. Il est écrit pour effectuer cette analyse sur des données brutes "SRA" spécifiques, disponibles sur un dépôt du ncbi (lien :https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRP017413&o=acc_s%3Aa).
 
 
 #####################################################################
