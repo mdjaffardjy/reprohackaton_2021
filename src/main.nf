@@ -48,7 +48,7 @@ process conversion_FASTQ {
     
     
     """    
-    fastq-dump --gzip --split-files ${sraid}
+    fastq-dump --gzip --split-files ${sraid}.sra
     """
 }
 
