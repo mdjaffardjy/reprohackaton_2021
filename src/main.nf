@@ -53,7 +53,7 @@ process conversion_FASTQ {
 }
 
 
-// Téléchargement du génome de référence -- séquences de chaque chromosome pour procéder à l'alignement
+// Téléchargement du génome de référence -- séquences de chaque chromosome pour procéder à l'alignement - version GRCh38
 process get_chr_seq {
 //This process permits to collect the genomic sequence of each human chromosome
 //It creates a compressed fasta file for each human chromosome
@@ -88,18 +88,35 @@ process fastqc {
 
 }
 
-// Alignement avec STAR. Il faut tout d'abord créer un index :
-process make_STAR_index {
+
+process concatenation_genome {
+    publishDir "Data/genome/"
+
     input:
     file '*.fa.gz' from chr_fa.collect()
+		
+    output: 
+    file "HumanGenome.fa" into genome_hum
+    
+    script:
+    """
+    gunzip -c ${all_chr} > HumanGenome.fa
+    """
+}
+
+// Alignement avec STAR. Il faut tout d'abord créer un index :
+process make_STAR_index {
+    publishDir "results/GenomeIndex/"
+    
+    input:
+    file (genome) from genome_hum.collect()
 
     output:
-    path ref into genome_idx 
+    path "ref" into genome_idx
 
-
+    script:
     """
-    gunzip -c *.fa.gz > ref.fa 
-    STAR --runThreadN ${task.cpus} --runMode genomeGenerate --genomeDir ref/ --genomeFastaFiles ref.fa
+    STAR --runThreadN ${task.cpus} --runMode genomeGenerate --genomeDir ref/ --genomeFastaFiles ${genome}
     """
 }
 
