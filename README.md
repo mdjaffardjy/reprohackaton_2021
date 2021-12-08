@@ -14,12 +14,12 @@ Ces workflows ont pour but d'analyser spécifiquement les données citées ci-de
 
 Pour faire tourner les workflows, il faut 8 cpus et 40GB de RAM.
 Les logiciels à avoir sont également : 
-	nextflow (version )
+	nextflow (version 21.10.4)
 	docker (version )
 	snakemake (version )
 	
 ## Faire tourner les workflows
-Pour faire tourner les workflows, notamment sur le cloud IFB, il faut lancer :
+Pour faire tourner les workflows, notamment sur le cloud IFB, il faut lancer, une fois dans le dossier du dépôt :
 ```bash
 conda activate
 nextflow run src/main.nf
