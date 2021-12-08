@@ -28,7 +28,7 @@ process download_SRA{
 	val sraid from SRAID
 
 	output:
-	tuple val(sraid), file("${sraid}.sra") into SRAFiles
+	tuple val(${sraid}), file("${sraid}.sra") into SRAFiles
 
 	
 	"""
@@ -41,10 +41,10 @@ process conversion_FASTQ {
     publishDir "data/FastQ/"
     
     input:
-    tuple val(sraid), file("${sraid}.sra") into SRAFiles
+    tuple val(${sraid}), file("${sraid}.sra") into SRAFiles
     
     output:
-    tuple val(sraid), file("*1.fastq.gz"), file("*2.fastq.gz") into FASTQ_files, FASTQ_files_qc
+    tuple val(${sraid}), file("*1.fastq.gz"), file("*2.fastq.gz") into FASTQ_files, FASTQ_files_qc
     
     
     """    
@@ -59,7 +59,7 @@ process get_chr_seq {
 //It creates a compressed fasta file for each human chromosome
 
     input:
-    val chr from chr_list
+    val ${chr} from chr_list
     
     output:
     file "*.fa.gz" into chr_fa
@@ -75,7 +75,7 @@ process fastqc {
     publishDir "results/fastqc_results/"
 
     input:
-    tuple val(sraid), file(read_fw), file(read_rc) from FASTQ_files_qc
+    tuple val(${sraid}), file(${read_fw}), file(${read_rc}) from FASTQ_files_qc
 
     output:
     tuple file("${SRAID}_1_fastqc.html"), file("${SRAID}_2_fastqc.html")
@@ -94,13 +94,13 @@ process make_STAR_index {
     file '*.fa.gz' from chr_fa.collect()
 
     output:
-    path ref into genome_idx 
+    path ${ref} into genome_idx 
 
 
     """
     gunzip -c *.fa.gz > ref.fa 
-    mkdir ref
-    STAR --runThreadN ${task.cpus} --runMode genomeGenerate --genomeDir ref/ --genomeFastaFiles ref.fa
+    mkdir ${ref} 
+    STAR --runThreadN ${task.cpus} --runMode genomeGenerate --genomeDir ${ref}  --genomeFastaFiles ${ref}.fa
     """
 }
 
@@ -109,7 +109,7 @@ process download_genome_annotations{
     publishDir "data/GenomeAnnotation/"
     
     input:
-    val gtfURL from gtf_URL
+    val ${gtfURL} from gtf_URL
     
     output:
     file "annot.gtf" into gtf
@@ -125,11 +125,11 @@ process map_FASTQ {
     publishDir "data/bam/"
 
     input:
-    tuple val(sar), file(fq_fw), file(fq_rv) from FASTQ_files
+    tuple val(${sar}), file(${fq_fw}), file(${fq_rv}) from FASTQ_files
     path ref from genome_idx
  
     output:
-    file "${sar}.bam" into mapped_fq_1, mapped_fastq_fq_2
+    file "${sar}.bam" into ${mapped_fq_1}, ${mapped_fastq_fq_2}
  
     script:
     """
@@ -154,14 +154,14 @@ process index_BAM {
     publishDir "data/bam_index/"
 
     input:
-    file bam from mapped_fq_1
+    file ${bam} from mapped_fq_1
  
     output:
     file "*.bai" into bam_index
  
     script:
     """
-    samtools index *.bam
+    samtools index ${bam}
     """
 }
 
@@ -170,8 +170,8 @@ process count_reads{
     publishDir "results/counts/"
     
     input:
-    file gtf_file from gtf
-    file bam from mapped_fq_2.collect()
+    file ${gtf_file} from gtf
+    file ${bam} from mapped_fq_2.collect()
     
     output:
     file "counts.txt" into file_count
@@ -191,8 +191,8 @@ process counts_analysis{
 	publishDir "results/analysis/"
 	
 	input:
-	file count from file_count
-	file des from description
+	file ${count} from file_count
+	file ${des} from description
 	
 	
 	//write output name for each plot needed
