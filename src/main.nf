@@ -83,7 +83,7 @@ process fastqc {
 
     script:
     """
-    fastqc -f fastq -q --threads ${task.cpus} ${read1} ${read2}
+    fastqc -f fastq -q --threads ${task.cpus} ${read_fw} ${read_rc}
     """
 
 }

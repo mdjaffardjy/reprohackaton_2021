@@ -18,7 +18,7 @@ list_chr=["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16"
 ### Rules
 rule all:
 	input: 
-		"DE_analysis.txt", "DE_genes_comparison.txt","exons_analysis.txt"
+		"results/Snk/analysis/results.txt", "results/Snk/analysis/*.csv", "results/Snk/analysis/analyse*"
 
 
 ### Téléchargement des données de séquencage brutes .sra
@@ -49,9 +49,24 @@ rule get_chr_seq:
   run:
     for i in range(len(list_chr)):
       shell("wget -O data/Snk/chr/{chr}.fa.gz ftp://ftp.ensembl.org/pub/release-101/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.{chr}.fa.gz".format(chr=list_chr[i]))
-____
-process qc
-______
+
+### Controle qualité des reads
+process fastqc {
+    publishDir "results/fastqc_results/"
+
+    input:
+    tuple val(sraid), file(read_fw), file(read_rc) from FASTQ_files_qc
+
+    output:
+    tuple file("${SRAID}_1_fastqc.html"), file("${SRAID}_2_fastqc.html")
+    tuple file("${SRAID}_1_fastqc.zip"), file("${SRAID}_2_fastqc.zip") into fastqc_results
+
+    script:
+    """
+    fastqc -f fastq -q --threads ${task.cpus} ${read1} ${read2}
+    """
+
+}
 
 rule concatenation_genome: # Unzip human genome and put it in the ref folder.
 	input:
@@ -140,7 +155,7 @@ rule statsAnalysis: # Statistical analysis on the samples, using the counting of
 	input:
 		"gene_output.counts"
 	output:
-		"results/Snk/analysis/results.txt", "results/Snk/analysis/*.csv"), "results/Snk/analysis/analyse*"
+		"results/Snk/analysis/results.txt", "results/Snk/analysis/*.csv", "results/Snk/analysis/analyse*"
 	container:
 		"docker://mdjaff/r-base:4.0.3"
 	script:
