@@ -28,7 +28,7 @@ process download_SRA{
 	val sraid from SRAID
 
 	output:
-	tuple val(${sraid}), file("${sraid}.sra") into SRAFiles
+	tuple val(sraid), file("${sraid}.sra") into SRAFiles
 
 	
 	"""
