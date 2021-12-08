@@ -22,9 +22,13 @@ Les logiciels à avoir sont également :
 Pour faire tourner les workflows, notamment sur le cloud IFB, il faut lancer :
 ```bash
 conda activate
+nextflow run src/main.nf
+```
+Pour générer un rapport du workflow et une flowchart qui témoigne du data flow du workflow :
+
+```bash
 nextflow run src/main.nf -with-report reports/report.txt -with-dag results/flowchart.png
 ```
-Les options servent à générer un rapport du workflow et une flowchart qui témoigne du data flow du workflow.
 
 Pour faire tourner le workflow snakemake, il faut lancer :
 
