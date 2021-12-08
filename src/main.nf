@@ -94,13 +94,13 @@ process make_STAR_index {
     file '*.fa.gz' from chr_fa.collect()
 
     output:
-    path ${ref} into genome_idx 
+    path ref into genome_idx 
 
 
     """
     gunzip -c *.fa.gz > ref.fa 
-    mkdir ${ref} 
-    STAR --runThreadN ${task.cpus} --runMode genomeGenerate --genomeDir ${ref}  --genomeFastaFiles ${ref}.fa
+    mkdir ref 
+    STAR --runThreadN ${task.cpus} --runMode genomeGenerate --genomeDir ref  --genomeFastaFiles ref.fa
     """
 }
 
