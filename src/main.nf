@@ -210,7 +210,7 @@ process counts_analysis{
 	file count from file_count	
 	
 	output:
-	tuple file("results.txt"), file(".csv"), file("analyse*") into chann_end
+	tuple file("results.txt"), file("*.csv"), file("analyse*") into chann_end
 	
 	script:
     """
