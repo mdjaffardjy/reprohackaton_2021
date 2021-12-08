@@ -59,7 +59,7 @@ process get_chr_seq {
 //It creates a compressed fasta file for each human chromosome
 
     input:
-    val chr from chr_list
+    val chr from liste_chromosomes
     
     output:
     file "*.fa.gz" into chr_fa
