@@ -191,17 +191,14 @@ process counts_analysis{
 	publishDir "results/analysis/"
 	
 	input:
-	file count from file_count
-	file des from description
+	file count from file_count	
 	
-	
-	//write output name for each plot needed
 	output:
 	tuple file("results.txt"), file(".csv"), file("analyse*") into chann_end
 	
 	script:
     """
-    Rscript ${workflow.projectDir}/bin/diff_expr_analysis.R ${R_params} ${count} "analyse" 
+    Rscript ${workflow.projectDir}/bin/diff_expr_analysis.R ${count}
     """
 }
 
