@@ -129,7 +129,7 @@ process map_FASTQ {
     path ref from genome_idx
  
     output:
-    file "${sar}.bam" into mapped_fq_1, mapped_fastq_fq_2
+    file "${sar}.bam" into mapped_fq_1, mapped_fq_2
  
     script:
     """
