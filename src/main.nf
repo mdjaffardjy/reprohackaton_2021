@@ -100,7 +100,7 @@ process concatenation_genome {
     
     script:
     """
-    gunzip -c ${all_chr} > HumanGenome.fa
+    gunzip -c *.fa.gz > HumanGenome.fa
     """
 }
 

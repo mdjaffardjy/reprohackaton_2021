@@ -51,12 +51,9 @@ rule get_chr_seq:
   run:
     for i in range(len(list_chr)):
       shell("wget -O Data/Snk/chr/{chr}.fa.gz ftp://ftp.ensembl.org/pub/release-101/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.{chr}.fa.gz".format(chr=list_chr[i]))
-
-
-
-
-_____
+____
 process qc
+______
 
 rule unzip_genome: # Unzip human genome and put it in the ref folder.
 	input:
