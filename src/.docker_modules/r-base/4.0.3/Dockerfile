@@ -8,34 +8,7 @@ ENV R_PKGS R=~4.0.3 \
   R-mathlib=~4.0.3 \
   R-dev=~4.0.3 \
   R-doc=~4.0.3
-
-ENV R_DEPS g++ \
-  libxml2-dev \
-  make \
-  cmake \
-  linux-headers \
-  cairo-dev \
-  libxmu-dev \
-  pango-dev \
-  perl \
-  tiff-dev \
-  icu-dev \
-  libjpeg-turbo \
-  pcre-dev \
-  readline-dev \
-  libexecinfo-dev \
-  file \
-  ttf-linux-libertine \
-  git \
-  openssl \
-  autoconf \
-  automake \
-  libuv \
-  http-parser \
-  tzdata \
-  libgit2-dev \
-  bash
-
+  
 RUN  apt-get update \
     && apt-get install -y procps libssl-dev libcurl4-gnutls-dev curl git libopenmpi-dev openmpi-bin openmpi-doc libxml2-dev \
     && R -e "if (!requireNamespace('BiocManager', quietly = TRUE)){install.packages('BiocManager')}" \

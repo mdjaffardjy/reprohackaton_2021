@@ -8,14 +8,11 @@
 /////////////////////////////////////////////////////////////////////
 
 
-// Identifiants SRA (SRAID) des échantillons
-SRAID = channel.from("SRR628582","SRR628583", "SRR628584", "SRR628585", "SRR628586", "SRR628587", "SRR628588", "SRR628589")
+// Identifiants SRA (SRAID) des echantillons
+SRAID = Channel.from("SRR628582","SRR628583", "SRR628584", "SRR628585", "SRR628586", "SRR628587", "SRR628588", "SRR628589")
 
-// Chromosomes d'intérêt
-liste_chromosomes = channel.from("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16" , "17", "18", "19", "20", "21", "22", "MT", "X", "Y")
-
-// Nom des fichiers d'alignement des échantillons
-SRAID2 = Channel.of('c("SRR628582.bam","SRR628584.bam", "SRR628586.bam", "SRR628588.bam", "SRR628589.bam", "SRR628583.bam", "SRR628585.bam", "SRR628587.bam")')
+// Chromosomes d'interet
+liste_chromosomes = Channel.from("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16" , "17", "18", "19", "20", "21", "22", "MT", "X", "Y")
 
 gtf_URL="ftp://ftp.ensembl.org/pub/release-101/gtf/homo_sapiens/Homo_sapiens.GRCh38.101.chr.gtf.gz"
 
