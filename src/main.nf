@@ -90,7 +90,7 @@ process fastqc {
 
 
 process concatenation_genome {
-    publishDir "Data/genome/"
+    publishDir "data/genome/"
 
     input:
     file '*.fa.gz' from chr_fa.collect()

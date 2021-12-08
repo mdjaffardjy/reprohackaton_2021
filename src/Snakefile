@@ -51,19 +51,26 @@ rule get_chr_seq:
       shell("wget -O data/Snk/chr/{chr}.fa.gz ftp://ftp.ensembl.org/pub/release-101/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.{chr}.fa.gz".format(chr=list_chr[i]))
 
 ### Controle qualité des reads
-process fastqc {
+rule fastqc :
     publishDir "results/fastqc_results/"
 
     input:
-    tuple val(sraid), file(read_fw), file(read_rc) from FASTQ_files_qc
+    	tuple val(sraid), file(read_fw), file(read_rc) from FASTQ_files_qc
 
     output:
-    tuple file("${SRAID}_1_fastqc.html"), file("${SRAID}_2_fastqc.html")
-    tuple file("${SRAID}_1_fastqc.zip"), file("${SRAID}_2_fastqc.zip") into fastqc_results
+    	expand("results/Snk/fastqc_results/{SRAID}_1_fastqc.html",SRAID=sra_id_list)
+    	expand("results/Snk/fastqc_results/{SRAID}_1_fastqc.html",SRAID=sra_id_list)
+    	expand("results/Snk/fastqc_results/{SRAID}_1_fastqc.html",SRAID=sra_id_list)
+    	expand("results/Snk/fastqc_results/{SRAID}_1_fastqc.html",SRAID=sra_id_list)
+    	
+    threads: 16
+    
+    container:
+    	"docker://evolbioinfo/fastqc:v0.11.8"
 
     script:
     """
-    fastqc -f fastq -q --threads ${task.cpus} ${read1} ${read2}
+    fastqc -f fastq -q --threads {threads} ${read_fw} ${read_rv}
     """
 
 }
