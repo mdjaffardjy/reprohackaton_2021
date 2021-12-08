@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 // ====================================================== Main workflow for RNA-seq data analysis ======================================================= // 
 
-channel_SRP = Channel.from('SRR628589', 'SRR628588', 'SRR628587', 'SRR628586', 'SRR628585', 'SRR628584', 'SRR628583', 'SRR628582') 
+channel_SRP = Channel.from('SRR628589') 
 
 process downloadSRR {
     /*
@@ -15,7 +15,7 @@ process downloadSRR {
     val srr_id from channel_SRP
 
     output:
-    file("${srr_id}.sra") into channel_srr 
+    tuple val(srr_id), file("${srr_id}.sra") into channel_srr 
     
     script:
     """
