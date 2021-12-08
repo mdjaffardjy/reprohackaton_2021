@@ -99,8 +99,7 @@ process make_STAR_index {
 
     """
     gunzip -c *.fa.gz > ref.fa 
-    mkdir ref 
-    STAR --runThreadN ${task.cpus} --runMode genomeGenerate --genomeDir ref  --genomeFastaFiles ref.fa
+    STAR --runThreadN ${task.cpus} --runMode genomeGenerate --genomeDir ref/ --genomeFastaFiles ref.fa
     """
 }
 
