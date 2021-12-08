@@ -55,8 +55,7 @@ process conversion_FASTQ {
 
 // Téléchargement du génome de référence -- séquences de chaque chromosome pour procéder à l'alignement - version GRCh38
 process get_chr_seq {
-//This process permits to collect the genomic sequence of each human chromosome
-//It creates a compressed fasta file for each human chromosome
+	publishDir "data/Genome/"
 
     input:
     val chr from liste_chromosomes
@@ -116,7 +115,7 @@ process make_STAR_index {
 
     script:
     """
-    STAR --runThreadN ${task.cpus} --runMode genomeGenerate --genomeDir ref/ --genomeFastaFiles ${genome}
+    STAR --runThreadN 2 --runMode genomeGenerate --genomeDir ref/ --genomeFastaFiles ${genome}
     """
 }
 

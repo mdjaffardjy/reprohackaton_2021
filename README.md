@@ -32,6 +32,16 @@ nextflow run src/main.nf -with-report reports/report.txt -with-dag results/flowc
 
 Pour faire tourner le workflow snakemake, il faut lancer :
 
+```bash
+snakemake --use-singularity -s src/Snakefile --cores 16
+```
+Pour générer un rulegraph du workflow :
+
+```bash
+snakemake --use-singularity -s src/Snakefile --forceall --rulegraph | dot -Tpdf > results/rulegraph.pdf
+```
+
+
 ## Résultats
 
 Les résultats sont visibles dans la partie
