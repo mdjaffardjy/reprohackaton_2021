@@ -136,7 +136,7 @@ rule count_reads:
 ### Analyse de l'expression différentielle avec un script R et génération des graphes et tableaux
 rule statsAnalysis: # Statistical analysis on the samples, using the counting of reads per gene done in the gene_count rule.
 	input:
-		"gene_output.counts"
+		"results/Snk/counts/gene_output.counts"
 	output:
 		"results/Snk/analysis/results.txt", "results/Snk/analysis/*.csv", "results/Snk/analysis/analyse*"
 	container:
