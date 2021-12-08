@@ -59,7 +59,7 @@ process get_chr_seq {
 //It creates a compressed fasta file for each human chromosome
 
     input:
-    val ${chr} from chr_list
+    val chr from chr_list
     
     output:
     file "*.fa.gz" into chr_fa
@@ -75,7 +75,7 @@ process fastqc {
     publishDir "results/fastqc_results/"
 
     input:
-    tuple val(${sraid}), file(${read_fw}), file(${read_rc}) from FASTQ_files_qc
+    tuple val(sraid), file(read_fw), file(read_rc) from FASTQ_files_qc
 
     output:
     tuple file("${SRAID}_1_fastqc.html"), file("${SRAID}_2_fastqc.html")
@@ -109,7 +109,7 @@ process download_genome_annotations{
     publishDir "data/GenomeAnnotation/"
     
     input:
-    val ${gtfURL} from gtf_URL
+    val gtfURL from gtf_URL
     
     output:
     file "annot.gtf" into gtf
@@ -125,7 +125,7 @@ process map_FASTQ {
     publishDir "data/bam/"
 
     input:
-    tuple val(${sar}), file(${fq_fw}), file(${fq_rv}) from FASTQ_files
+    tuple val(sar), file(fq_fw), file(fq_rv) from FASTQ_files
     path ref from genome_idx
  
     output:
@@ -154,7 +154,7 @@ process index_BAM {
     publishDir "data/bam_index/"
 
     input:
-    file ${bam} from mapped_fq_1
+    file bam from mapped_fq_1
  
     output:
     file "*.bai" into bam_index
@@ -170,8 +170,8 @@ process count_reads{
     publishDir "results/counts/"
     
     input:
-    file ${gtf_file} from gtf
-    file ${bam} from mapped_fq_2.collect()
+    file gtf_file from gtf
+    file bam from mapped_fq_2.collect()
     
     output:
     file "counts.txt" into file_count
@@ -191,8 +191,8 @@ process counts_analysis{
 	publishDir "results/analysis/"
 	
 	input:
-	file ${count} from file_count
-	file ${des} from description
+	file count from file_count
+	file des from description
 	
 	
 	//write output name for each plot needed
