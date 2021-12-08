@@ -15,7 +15,7 @@ process downloadSRR {
     val srr_id from channel_SRP
 
     output:
-    tuple val(srr_id), file("${srr_id}.sra") into channel_srr 
+    file("${srr_id}.sra") into channel_srr 
     
     script:
     """
