@@ -1,4 +1,4 @@
-FROM alpine:3.13.1
+FROM r-base:4.0.3
 
 # R + DESeq2 + FactoMineR + factoextra + pheatmap + RColorBrewer + dplyr +xlsx
 # https://cran.r-project.org/
