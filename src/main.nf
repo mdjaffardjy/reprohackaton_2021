@@ -71,14 +71,13 @@ process get_chr_seq {
 
 // Contrôle qualité des reads
 process fastqc {
-    publishDir "results/fastqc_results/"
+    publishDir "results/fastqc_results/", mode: "copy"
 
     input:
     tuple val(sraid), file(read_fw), file(read_rc) from FASTQ_files_qc
 
     output:
     tuple file("${SRAID}_1_fastqc.html"), file("${SRAID}_2_fastqc.html")
-    tuple file("${SRAID}_1_fastqc.zip"), file("${SRAID}_2_fastqc.zip") into fastqc_results
 
     script:
     """

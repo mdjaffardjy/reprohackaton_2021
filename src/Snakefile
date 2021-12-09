@@ -36,7 +36,7 @@ rule conversion_FASTQ: # Create two fastq.gz files for each .sra file (use srato
 		"data/snk/SRA/{SRAID}.sra"
 	output:
 		"data/snk/FASTQ/{SRAID}_1.fastq.gz","data/snk/FASTQ/{SRAID}_2.fastq.gz"
-	container:
+	singularity: 
         	"docker://evolbioinfo/sratoolkit:v2.10.8"
 	shell:
 		"fastq-dump --gzip --outdir data/snk/FASTQ/ --split-files {input}"
@@ -66,7 +66,7 @@ rule make_STAR_index: # Index human genome and create many output files (use STA
 	output:
 		"data/snk/ref/chrLength.txt","ref/chrName.txt","ref/chrNameLength.txt","ref/chrStart.txt","ref/genomeParameters.txt","ref/Genome","ref/SA","ref/SAindex"
 	threads: 16
-	container:
+	singularity: 
         	"docker://evolbioinfo/star:v2.7.6a"
 	shell:
 		"STAR --runThreadN {threads} --runMode genomeGenerate --genomeDir ref/ --genomeFastaFiles {input}"
@@ -89,7 +89,7 @@ rule map_FASTQ:
 	output:
 		"data/snk/bam/{SRAID}.bam"
 	threads: 16
-	container:
+	singularity: 
         	"docker://evolbioinfo/star:v2.7.6a"
 	shell:
 		"""
@@ -114,7 +114,7 @@ rule index_BAM:
 		"data/snk/bam/{SRAID}.bam"
 	output:
 		"data/snk/bam/{SRAID}.bam.bai"
-	container:
+	singularity: 
         	"docker://evolbioinfo/samtools:v1.11"
 	shell:
 		"samtools index {input} {output}"
@@ -127,7 +127,7 @@ rule count_reads:
         output:
                 "results/Snk/counts/gene_output.counts"
         threads: 16
-        container:
+        singularity: 
         	"docker://evolbioinfo/subread:v2.0.1"
         shell:
                 "featureCounts -p -T {threads} -t gene -g gene_id -s 0 -a {input.annot} -o {output} {input.bam_files}"
@@ -139,7 +139,7 @@ rule statsAnalysis: # Statistical analysis on the samples, using the counting of
 		"results/Snk/counts/gene_output.counts"
 	output:
 		"results/Snk/analysis/results.txt", "results/Snk/analysis/*.csv", "results/Snk/analysis/analyse*"
-	container:
+	singularity: 
 		"docker://mdjaff/r-base:4.0.3"
 	script:
 		"Rscript diff_expr_analysis.R {input}"
