@@ -82,8 +82,8 @@ process fastqc {
 	script:
 
 	"""
-	fastqc  ${r1}
-	fastqc  ${r2}
+	fastqc  ${read_fw}
+	fastqc  ${read_rc}
 	"""
 
 }
