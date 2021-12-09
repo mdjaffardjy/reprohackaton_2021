@@ -1,0 +1,82 @@
+digraph "flowchart" {
+p0 [shape=point,label="",fixedsize=true,width=0.1,xlabel="Channel.from"];
+p2 [label="download_SRA"];
+p0 -> p2 [label="SRAID"];
+
+p1 [shape=point,label="",fixedsize=true,width=0.1,xlabel="Channel.from"];
+p4 [label="get_chr_seq"];
+p1 -> p4 [label="liste_chromosomes"];
+
+p2 [label="download_SRA"];
+p3 [label="conversion_FASTQ"];
+p2 -> p3 [label="SRAFiles"];
+
+p3 [label="conversion_FASTQ"];
+p13 [label="map_FASTQ"];
+p3 -> p13 [label="FASTQ_files"];
+
+p3 [label="conversion_FASTQ"];
+p5 [label="fastqc"];
+p3 -> p5 [label="FASTQ_files_qc"];
+
+p4 [label="get_chr_seq"];
+p7 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p4 -> p7 [label="chr_fa"];
+
+p5 [label="fastqc"];
+p6 [shape=point];
+p5 -> p6 [label="fastQC"];
+
+p7 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p8 [label="concatenation_genome"];
+p7 -> p8;
+
+p8 [label="concatenation_genome"];
+p9 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p8 -> p9 [label="genome_hum"];
+
+p9 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p10 [label="make_STAR_index"];
+p9 -> p10;
+
+p10 [label="make_STAR_index"];
+p13 [label="map_FASTQ"];
+p10 -> p13 [label="genome_idx"];
+
+p11 [shape=point,label="",fixedsize=true,width=0.1];
+p12 [label="download_genome_annotations"];
+p11 -> p12 [label="gtfURL"];
+
+p12 [label="download_genome_annotations"];
+p17 [label="count_reads"];
+p12 -> p17 [label="gtf"];
+
+p13 [label="map_FASTQ"];
+p14 [label="index_BAM"];
+p13 -> p14 [label="mapped_fq_1"];
+
+p13 [label="map_FASTQ"];
+p16 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p13 -> p16 [label="mapped_fq_2"];
+
+p14 [label="index_BAM"];
+p15 [shape=point];
+p14 -> p15 [label="bam_index"];
+
+p16 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p17 [label="count_reads"];
+p16 -> p17;
+
+p17 [label="count_reads"];
+p19 [label="counts_analysis"];
+p17 -> p19 [label="file_count"];
+
+p17 [label="count_reads"];
+p18 [shape=point];
+p17 -> p18 [label="logsFileCount"];
+
+p19 [label="counts_analysis"];
+p20 [shape=point];
+p19 -> p20 [label="chann_end"];
+
+}
