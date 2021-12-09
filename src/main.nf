@@ -82,7 +82,7 @@ process fastqc {
 
     script:
     """
-    fastqc -f fastq -q --threads 2 ${read_fw} ${read_rc}
+    fastqc -f fastq -q --threads ${task.cpus} ${read_fw} ${read_rc}
     """
 
 }
@@ -115,7 +115,7 @@ process make_STAR_index {
 
     script:
     """
-    STAR --runThreadN 2 --runMode genomeGenerate --genomeDir ref/ --genomeFastaFiles ${genome}
+    STAR --runThreadN ${task.cpus} --runMode genomeGenerate --genomeDir ref/ --genomeFastaFiles ${genome}
     """
 }
 
