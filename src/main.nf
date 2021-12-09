@@ -76,14 +76,15 @@ process fastqc {
     input:
     tuple val(sraid), file(read_fw), file(read_rc) from FASTQ_files_qc
 
-    output:
-    tuple file("${SRAID}_1_fastqc.html"), file("${SRAID}_2_fastqc.html")
+    output : 
+	tuple file ("*1*.html"), file ("*2*.html") into fastQC
+	
+	script:
 
-    script:
-    """
-    fastqc ${read_fw} 
-    fastqc ${read_rc}
-    """
+	"""
+	fastqc  ${r1}
+	fastqc  ${r2}
+	"""
 
 }
 
