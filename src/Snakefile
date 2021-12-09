@@ -51,7 +51,7 @@ rule get_chr_seq:
       shell("wget -O data/snk/chr/{chr}.fa.gz ftp://ftp.ensembl.org/pub/release-101/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.{chr}.fa.gz".format(chr=list_chr[i]))
 
 
-rule concatenation_genome: # Unzip human genome and put it in the ref folder.
+rule concatenation_genome: 
 	input:
 		expand("data/snk/chr/{CHR}.fa.gz",CHR=list_chr)
 	output:
@@ -70,6 +70,23 @@ rule make_STAR_index: # Index human genome and create many output files (use STA
         	"docker://evolbioinfo/star:v2.7.6a"
 	shell:
 		"STAR --runThreadN {threads} --runMode genomeGenerate --genomeDir ref/ --genomeFastaFiles {input}"
+
+
+rule fastqc :
+    input :
+        fastq_fw = "data/snk/FASTQ/{SRAID}_1.fastq.gz",
+        fastq_rc = "data/snk/FASTQ/{SRAID}_2.fastq.gz"
+    output :
+        fastq1html = "results/snk/fastqc_results/{SRAID}_1_fastqc.html",
+        fastq2html = "results/snk/fastqc_results/{SRAID}_2_fastqc.html"
+    singularity :
+        "docker://evolbioinfo/fastqc:v0.11.8"
+        
+    shell :
+    	"""
+        fastqc {input.fastq_fw}
+        fastqc {input.fastq_rc}
+        """
 
 
 ### Obtention de fichier d'annotation du génome sous le format gff (.gtf) pour compter les reads	
