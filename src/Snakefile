@@ -50,7 +50,25 @@ rule get_chr_seq:
     for i in range(len(list_chr)):
       shell("wget -O data/snk/chr/{chr}.fa.gz ftp://ftp.ensembl.org/pub/release-101/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.{chr}.fa.gz".format(chr=list_chr[i]))
 
-
+### controle qualite des reads
+rule fastqc :
+    input :
+        fastq1 = "data/snk/FASTQ/{SRAID}_1.fastq.gz",
+        fastq2 = "data/snk/FASTQ/{SRAID}_2.fastq.gz"
+    output :
+        fastq1html = "results/fastqc_results/{SRAID}_1_fastqc.html",
+        fastq2html = "results/fastqc_results/{SRAID}_2_fastqc.html"
+    singularity :
+        "docker://evolbioinfo/fastqc:v0.11.8"
+    log :
+	"RNAseq/Logs/{SRR}.controle_qualite.log"
+    params :
+        qual_repertory = "RNAseq/QualityRep/"
+    shell :
+        "fastqc {input.fastq1} -o {output.fastq1html} ;"
+        "fastqc {input.fastq2} -o {output.fastq2html} ;"
+        
+        
 rule concatenation_genome: 
 	input:
 		expand("data/snk/chr/{CHR}.fa.gz",CHR=list_chr)
@@ -151,7 +169,7 @@ rule count_reads:
 
 
 ### Analyse de l'expression différentielle avec un script R et génération des graphes et tableaux
-rule statsAnalysis: # Statistical analysis on the samples, using the counting of reads per gene done in the gene_count rule.
+rule counts_analysis:
 	input:
 		"results/Snk/counts/gene_output.counts"
 	output:
