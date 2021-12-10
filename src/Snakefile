@@ -87,24 +87,11 @@ rule make_STAR_index: # Index human genome and create many output files (use STA
 	singularity: 
         	"docker://evolbioinfo/star:v2.7.6a"
 	shell:
-		"STAR --runThreadN {threads} --runMode genomeGenerate --genomeDir data/snk/ref/ --genomeFastaFiles {input}"
+		"""
+		STAR --runThreadN {threads} --runMode genomeGenerate --genomeDir data/snk/ref/ --genomeFastaFiles {input}
+		"""
 
-
-rule fastqc :
-    input :
-        fastq_fw = "data/snk/FASTQ/{SRAID}_1.fastq.gz",
-        fastq_rc = "data/snk/FASTQ/{SRAID}_2.fastq.gz"
-    output :
-        fastq1html = "results/snk/fastqc_results/{SRAID}_1_fastqc.html",
-        fastq2html = "results/snk/fastqc_results/{SRAID}_2_fastqc.html"
-    singularity :
-        "docker://evolbioinfo/fastqc:v0.11.8"
-        
-    shell :
-    	"""
-        fastqc {input.fastq_fw}
-        fastqc {input.fastq_rc}
-        """
+    
 
 
 ### Obtention de fichier d'annotation du génome sous le format gff (.gtf) pour compter les reads	
