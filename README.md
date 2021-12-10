@@ -16,7 +16,11 @@ Pour faire tourner les workflows, il faut 8 cpus et 40GB de RAM.
 Les logiciels à avoir sont également : 
 	nextflow (version 21.10.4)
 	docker (version )
+	
 	snakemake (version )
+	singularity (
+	
+Tous ces logiciels sont présents dans l'environnement conda fourni dans env_conda.yaml
 	
 ## Faire tourner les workflows
 Pour faire tourner les workflows, notamment sur le cloud IFB, il faut lancer, une fois dans le dossier du dépôt :

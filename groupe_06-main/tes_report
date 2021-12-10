@@ -1,0 +1,27 @@
+report: "/home/ubuntu/data/mydatalocal/test_report/report/workflow.rst"
+report_path = "/home/ubuntu/data/mydatalocal/test_report/report/workflow.rst"
+SAMPLES=["SRR628582","SRR628583","SRR628584","SRR628585","SRR628586","SRR628587","SRR628588","SRR628589"]
+
+print(workflow.basedir)
+## Règle all :
+
+rule all:
+	input:
+		expand("sraFiles/{sample}.1", sample=SAMPLES)
+
+
+###########################################################################################################################################
+## Etape 1 : téléchargement et traitement des fichiers .sra pour obtenir des fichiers .fastq utilisables pour l'indexage et le mapping : ##
+###########################################################################################################################################
+
+
+# Téléchargement des fichiers .sra pour le début de l'analyse :
+		
+rule download_sra:
+	output: 
+		report("sraFiles/{sample}.1", category = "download SRA files")
+	threads : 2
+	shell:
+		"""
+		wget -O {output} https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos1/sra-pub-run-5/{wildcards.sample}/{wildcards.sample}.1
+		"""

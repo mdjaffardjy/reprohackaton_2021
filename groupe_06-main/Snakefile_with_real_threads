@@ -1,0 +1,168 @@
+#####################################################################
+## Snakefile Général : déroulement complet du workflow d'analyse : ##
+#####################################################################
+
+## Définition des variables pour les règles suivantes :
+
+ID = ["1", "2"]
+SAMPLES=["SRR628582","SRR628583","SRR628584","SRR628585","SRR628586","SRR628587","SRR628588","SRR628589"]
+KLIST = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "MT", "X", "Y"]
+
+## Règle all :
+
+rule all:
+	input:
+		"fichier.Rdata"
+
+
+###########################################################################################################################################
+## Etape 1 : téléchargement et traitement des fichiers .sra pour obtenir des fichiers .fastq utilisables pour l'indexage et le mapping : ##
+###########################################################################################################################################
+
+
+# Téléchargement des fichiers .sra pour le début de l'analyse :
+		
+rule download_sra:
+	output: 
+		"sraFiles/{sample}.1"
+	threads : 2
+	shell:
+		"""
+		wget -O {output} https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos1/sra-pub-run-5/{wildcards.sample}/{wildcards.sample}.1
+		"""
+
+# Transformation des fichiers sra en .fastq :
+
+rule makefastq:
+	input:
+		"sraFiles/{sample}.1"
+	singularity: 
+		"docker://evolbioinfo/sratoolkit:v2.10.8"
+	output:
+		"fastqFiles/{sample}.1_1.fastq",
+		"fastqFiles/{sample}.1_2.fastq"
+	threads: 2
+	shell: 
+		"""
+		fastq-dump --split-files {input} -O fastqFiles/
+
+		"""
+
+########################################################################################################################
+## Etape 2.1 : obtention du génome indexé : téléchargement (fait avant) et traitement des fichiers du génome humain : ##
+########################################################################################################################
+
+# Téléchargement des choromosomes pour l'indexage du génome :
+
+rule download_chromosomes:
+	output:
+		"chromosomes/{chromosome}.fa.gz"
+	shell:
+		"""
+		wget -O {output} ftp://ftp.ensembl.org/pub/release-101/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.{wildcards.chromosome}.fa.gz
+		"""
+
+# concaténer les fichiers du génome correspondant aux chromosomes pour en obtenir un unique correspondant au génome humain entier :
+
+rule concatChr:
+	input:
+		expand("chromosomes/{chromosome}.fa.gz", chromosome=KLIST)
+	output:
+		"genome/genome.fa.gz"
+	shell:
+		"gunzip -c {input} | gzip -c > {output}"
+
+# décompresser le fichier du génome entier obtenu :
+
+rule gunzipGenome:
+	input:
+		"genome/genome.fa.gz"
+	output:
+		"genome/genome.fa"
+	shell:
+		"""
+		gunzip -c {input} > {output}
+		"""
+
+# indexer le génome obtenu :
+
+rule index:
+	input: 
+		"genome/genome.fa"
+	output:
+		"genome_index/genomeParameters.txt"
+	singularity: 
+		"docker://evolbioinfo/star:v2.7.6a"
+	threads : 4
+	shell:
+		"""
+		STAR --runThreadN {threads} --runMode genomeGenerate --genomeDir genome_index/ --genomeFastaFiles {input}
+		"""
+
+###########################################################
+## Etape 2.2 : mapping des .fastq sur le génome indexé : ##
+###########################################################
+
+
+rule mapping:
+	input:
+		i1 = "fastqFiles/{sample}.1_1.fastq",
+		i2 = "fastqFiles/{sample}.1_2.fastq",
+		gparam = "genome_index/genomeParameters.txt"
+	output:
+		"bamfiles/{sample}.bam"
+	singularity:
+		"docker://evolbioinfo/star:v2.7.6a"
+	threads: 16
+	shell:
+		"""
+		STAR --outSAMstrandField intronMotif --outFilterMismatchNmax 4  --outFilterMultimapNmax 10 --genomeDir genome_index/ --readFilesIn {input.i1} {input.i2} --runThreadN {threads} --outSAMunmapped None --outSAMtype BAM SortedByCoordinate --outStd BAM_SortedByCoordinate --genomeLoad NoSharedMemory --limitBAMsortRAM 50000000000 > {output}
+		"""
+
+###################################
+## Etape 3 : compter les reads : ##
+###################################
+
+
+# Télécharger un fichier d'annotations pour le comptage :
+
+
+rule downloadGenomeAnnotation:
+	output :
+		"file_genome_annotation/Homo_sapiens.GRCh38.101.chr.gtf"
+	run:
+		shell("wget -P file_genome_annotation/ ftp://ftp.ensembl.org/pub/release-101/gtf/homo_sapiens/Homo_sapiens.GRCh38.101.chr.gtf.gz")
+		shell("gunzip file_genome_annotation/Homo_sapiens.GRCh38.101.chr.gtf.gz")
+
+
+# Comptage des reads et de leurs différences au génome de référence :
+
+rule counting:
+	input:
+    		i1 = "bamfiles/{sample}.bam",
+		gtf = "file_genome_annotation/Homo_sapiens.GRCh38.101.chr.gtf"
+	output:
+		"countfiles/{sample}.counts"
+	priority: 91
+	singularity:
+		"docker://evolbioinfo/subread:v2.0.1"
+	threads: 2
+	shell:
+		"""
+		featureCounts -T {threads} -t gene -g gene_id -s 0 -a {input.gtf} -o {output} {input.i1}
+		"""
+
+####################################################
+## Etape 4 : analyser les résultats de comptage : ##
+####################################################
+
+rule analyse_stat_R:
+	input:
+		expand("countfiles/{sample}.counts", sample=SAMPLES)
+	output:
+		"fichier.Rdata"
+	singularity:
+		"docker://evolbioinfo/deseq2:v1.28.1"
+	script:
+		"/home/ubuntu/hackathon_groupe6/Workflow/script_R-analyse-stat.R"
+

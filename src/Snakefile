@@ -64,12 +64,12 @@ rule make_STAR_index: # Index human genome and create many output files (use STA
 	input:
 		"data/snk/ref/ref.fa"	
 	output:
-		"data/snk/ref/chrLength.txt","ref/chrName.txt","ref/chrNameLength.txt","ref/chrStart.txt","ref/genomeParameters.txt","ref/Genome","ref/SA","ref/SAindex"
+		"data/snk/ref/chrLength.txt","data/snk/ref/chrName.txt","data/snk/ref/chrNameLength.txt","data/snk/ref/chrStart.txt","data/snk/ref/genomeParameters.txt","data/snk/ref/Genome","data/snk/ref/SA","data/snk/ref/SAindex"
 	threads: 16
 	singularity: 
         	"docker://evolbioinfo/star:v2.7.6a"
 	shell:
-		"STAR --runThreadN {threads} --runMode genomeGenerate --genomeDir ref/ --genomeFastaFiles {input}"
+		"STAR --runThreadN {threads} --runMode genomeGenerate --genomeDir data/snk/ref/ --genomeFastaFiles {input}"
 
 
 rule fastqc :

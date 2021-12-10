@@ -1,0 +1,53 @@
+#################################
+###### 1. LANCER L'ANALYSE ######
+#################################
+
+# Activer l'environnement Bioconda :
+conda activate 
+
+# Installer Singularity version 3.6.3 nécessaire au fonctionnement de Snakemake avec les containers :
+conda install singularity=3.6.3
+
+# Cloner le respository hackathon_groupe6 sur la machine
+git clone https://github.com/elodieyan/hackathon_groupe6.git
+
+# Se placer dans le répertoire mydatalocal pour pouvoir y stocker des fichiers lourds :
+cd /home/ubuntu/data/mydatalocal/
+
+# Lancer le sra_configurator pour les paramètres de Singularity, à faire une fois avant d'appeler tout le pipeline d'analyse :
+snakemake --use-singularity --cores 1 -s /home/ubuntu/hackathon_groupe6/Workflow/sraConfigurator 
+## Il va y avoir une fenêtre bleue avec des options qui s'ouvre, vous faites save puis exit. 
+
+## Une fois que c'est revenu à la normale, lancez le pipeline d'analyse :
+snakemake --use-singularity --cores 16 -s /home/ubuntu/hackathon_groupe6/Workflow/Snakefile
+
+# /!\ /!\ Si votre connexion internet est peu stable ou que vousa avez des pertes de session à distance car le temps d'exécution est trop long, lancer la commande précédente en screen en ajoutant devant celle-ci "screen -d -m" /!\ /!\ c'est-à-dire :
+screen -d -m snakemake --use-singularity --cores 16 -s /home/ubuntu/hackathon_groupe6/Workflow/Snakefile
+# Pour voir si le screen tourne toujours : 
+screen -list
+# --> si il y a encore un screen dans la Socket, c'est qu'il tourne toujours, donc attendre ; sinon, aller regarder si tous les fichiers sont là ou explorer le log de snakemake.
+
+##############################################################################
+####### 2. OBTENIR LES RESULTATS DE L'ANALYSE SOUS FORME DE GRAPHIQUES #######
+##############################################################################
+
+# En sortie du pipeline, vous obtenez un fichier "fichier.Rdata". Pour faire les graphiques il faut ouvrir l'application R.
+# Assurez vous d'avoir des versions récentes de R (minimum 3.6) et Rtools 
+# Ouvrez le fichier R stats_analyse_graphs.R et faites RUN. Vous aurez normalement deux figures qui s'enregistrent : l'ACP et le Volcano plot.
+
+###################################################
+###### 3. AUTRES : VISUALISATION DU PIPELINE ######
+###################################################
+
+# Obtenir une visualisation du pipeline :
+# Pour un graphe simple :
+snakemake -s /home/ubuntu/hackathon_groupe6/Workflow/Snakefile --forceall --rulegraph | dot -Tpdf > rulegraph.pdf
+
+# Pour un graphe plus complet:
+snakemake -s /home/ubuntu/hackathon_groupe6/Workflow/Snakefile --forceall --filegraph | dot -Tpdf > filegraph.pdf
+
+# Pour un DAG :
+snakemake -s /home/ubuntu/hackathon_groupe6/Workflow/Snakefile --forceall --dag | dot -Tpdf > dag.pdf
+
+
+
