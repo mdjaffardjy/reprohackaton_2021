@@ -1,0 +1,1 @@
+2021-12-10 00:38:01	2h 33m 32s	drunk_bernard	OK	8da17deefd55668123964daad436af54	8e611d78-b1d3-4901-b271-2e6b8df854bd	nextflow main.nf -c nextflow.config -with-trace -with-timeline -bg
