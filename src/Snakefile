@@ -18,7 +18,7 @@ list_chr=["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16"
 ### Rules
 rule all:
 	input: 
-		"results/Snk/analysis/results.txt", "results/Snk/analysis/*.csv", "results/Snk/analysis/analyse*", "results/fastqc_results/{SRAID}_1_fastqc.html","results/fastqc_results/{SRAID}_2_fastqc.html"
+		"results/Snk/analysis/results.txt", "results/Snk/analysis/*.csv", "results/Snk/analysis/analyse*", "results/fastqc_results/*.html"
 
 
 ### Téléchargement des données de séquencage brutes .sra
