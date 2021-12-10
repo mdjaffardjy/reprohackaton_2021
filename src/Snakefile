@@ -114,7 +114,7 @@ rule map_FASTQ:
         --outFilterMismatchNmax 4 \
         --outFilterMultimapNmax 10 \
         --genomeDir data/snk/ref \
-        --readFilesIn <(gunzip -c {input.fq_fw}) <(gunzip -c ${fq_rv}) \
+        --readFilesIn <(gunzip -c {input.fq_fw}) <(gunzip -c {input.fq_rv}) \
         --runThreadN {threads} \
         --outSAMunmapped None \
         --outSAMtype BAM SortedByCoordinate \
