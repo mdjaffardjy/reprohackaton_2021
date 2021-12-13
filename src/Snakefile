@@ -31,9 +31,9 @@ rule download_sra:
       shell("wget -O data/snk/SRA/{SRAID}.sra https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos1/sra-pub-run-5/{SRAID}/{SRAID}.1".format(SRAID=sra_id_list[k]))
 
 ### Conversion des SRA en fastq
-rule conversion_FASTQ: # Create two fastq.gz files for each .sra file (use sratoolkit container). One file contains the genetic sequence in 5'3' and the other in 3'5'.
+rule conversion_FASTQ: 
 	input:
-		"data/snk/SRA/{SRAID}.sra"
+		expand("data/snk/SRA/{SRAID}.sra",SRAID=sra_id_list)
 	output:
 		"data/snk/FASTQ/{SRAID}_1.fastq.gz","data/snk/FASTQ/{SRAID}_2.fastq.gz"
 	singularity: 
