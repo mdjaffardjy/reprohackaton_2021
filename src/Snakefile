@@ -172,12 +172,12 @@ rule count_exons:
 ### Analyse de l'expression différentielle avec un script R et génération des graphes et tableaux
 rule counts_analysis:
 	input:
-		"results/Snk/counts/gene_output.counts"
+		counts = "results/Snk/counts/counts.txt", exons ="results/Snk/counts/exons_counts.txt"
 	output:
 		"results/Snk/analysis/results.txt", "results/Snk/analysis/*.csv", "results/Snk/analysis/analyse*"
 	singularity: 
 		"docker://mdjaff/r-base:4.0.3"
 	script:
-		"Rscript diff_expr_analysis.R {input}"
+		"Rscript diff_expr_analysis.R {input.counts}"
 
 	
