@@ -112,11 +112,11 @@ process make_STAR_index {
     file (genome) from genome_hum.collect()
 
     output:
-    path "data/ref/" into genome_idx
+    path "ref" into channel_genome_index
 
     script:
     """
-    STAR --runThreadN ${task.cpus} --runMode genomeGenerate --genomeDir data/ref/ --genomeFastaFiles ${genome}
+    STAR --runThreadN ${task.cpus} --runMode genomeGenerate --genomeDir ref/ --genomeFastaFiles ${genome}
     """
 }
 
