@@ -112,7 +112,7 @@ process make_STAR_index {
     file (genome) from genome_hum.collect()
 
     output:
-    path "ref" into channel_genome_index
+    path "ref" into genome_idx
 
     script:
     """
