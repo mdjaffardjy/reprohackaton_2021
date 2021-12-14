@@ -96,7 +96,7 @@ rule download_genome_annotations:
 		"data/snk/GenomeAnnotation/Homo_sapiens.GRCh38.101.chr.gtf"
 	shell:
 		"""
-		wget ftp://ftp.ensembl.org/pub/release-101/gtf/homo_sapiens/Homo_sapiens.GRCh38.101.chr.gtf.gz > data/snk/GenomeAnnotation/Homo_sapiens.GRCh38.101.chr.gtf.gz
+		wget ftp://ftp.ensembl.org/pub/release-101/gtf/homo_sapiens/Homo_sapiens.GRCh38.101.chr.gtf.gz -O data/snk/GenomeAnnotation/Homo_sapiens.GRCh38.101.chr.gtf.gz
 		gunzip data/snk/GenomeAnnotation/Homo_sapiens.GRCh38.101.chr.gtf.gz > {output}
 		"""
 
