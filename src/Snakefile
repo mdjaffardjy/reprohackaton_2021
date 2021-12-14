@@ -79,13 +79,14 @@ rule make_STAR_index: # Index human genome and create many output files (use STA
 		"data/snk/ref/ref.fa"	
 	output:
 		"data/snk/ref/genomeParameters.txt"
-	threads: 16
 	singularity: 
-        	"docker://evolbioinfo/star:v2.7.6a"
+		"docker://evolbioinfo/star:v2.7.6a"
+	threads : 16
 	shell:
 		"""
 		STAR --runThreadN {threads} --runMode genomeGenerate --genomeDir data/snk/ref/ --genomeFastaFiles {input}
 		"""
+	
 
     
 
