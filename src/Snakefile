@@ -103,7 +103,7 @@ rule download_genome_annotations:
 ### Mapping des fichiers FASTQ grâce à l'index précédemment créé avec STAR
 rule map_FASTQ: 
 	input:
-		fq_fw="data/snk/FASTQ/{SRAID}_1.fastq.gz",fq_rv="data/snk/FASTQ/{SRAID}_2.fastq.gz", chr_index="data/snk/ref/chrLength.txt"
+		fq_fw="data/snk/FASTQ/{SRAID}_1.fastq.gz",fq_rv="data/snk/FASTQ/{SRAID}_2.fastq.gz"
 	output:
 		"data/snk/bam/{SRAID}.bam"
 	threads: 16
