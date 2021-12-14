@@ -69,25 +69,6 @@ process get_chr_seq {
     """
 }
 
-// Contrôle qualité des reads
-process fastqc {
-    publishDir "results/fastqc_results/", mode: "copy"
-
-    input:
-    tuple val(sraid), file(read_fw), file(read_rc) from FASTQ_files_qc
-
-    output : 
-	tuple file ("*1*.html"), file ("*2*.html") into fastQC
-	
-	script:
-
-	"""
-	fastqc  ${read_fw}
-	fastqc  ${read_rc}
-	"""
-
-}
-
 
 process concatenation_genome {
     publishDir "data/genome/"
