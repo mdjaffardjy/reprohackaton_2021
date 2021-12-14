@@ -60,13 +60,9 @@ rule fastqc :
         fastq2html = "results/fastqc_results/{SRAID}_2_fastqc.html"
     singularity :
         "docker://evolbioinfo/fastqc:v0.11.8"
-    log :
-	"RNAseq/Logs/{SRR}.controle_qualite.log"
-    params :
-        qual_repertory = "RNAseq/QualityRep/"
     shell :
-        "fastqc {input.fastq1} -o {output.fastq1html} ;"
-        "fastqc {input.fastq2} -o {output.fastq2html} ;"
+        "fastqc {input.fastq1} -o {output.fastq1html} "
+        "fastqc {input.fastq2} -o {output.fastq2html} "
         
         
 rule concatenation_genome: 
@@ -82,7 +78,7 @@ rule make_STAR_index: # Index human genome and create many output files (use STA
 	input:
 		"data/snk/ref/ref.fa"	
 	output:
-		"data/snk/ref/chrLength.txt","data/snk/ref/chrName.txt","data/snk/ref/chrNameLength.txt","data/snk/ref/chrStart.txt","data/snk/ref/genomeParameters.txt","data/snk/ref/Genome","data/snk/ref/SA","data/snk/ref/SAindex"
+		"data/snk/ref/genomeParameters.txt"
 	threads: 16
 	singularity: 
         	"docker://evolbioinfo/star:v2.7.6a"
@@ -100,8 +96,8 @@ rule download_genome_annotations:
 		"data/snk/GenomeAnnotation/Homo_sapiens.GRCh38.101.chr.gtf"
 	shell:
 		"""
-		wget ftp://ftp.ensembl.org/pub/release-101/gtf/homo_sapiens/Homo_sapiens.GRCh38.101.chr.gtf.gz
-		gunzip Homo_sapiens.GRCh38.101.chr.gtf.gz > data/snk/GenomeAnnotation/Homo_sapiens.GRCh38.101.chr.gtf
+		wget ftp://ftp.ensembl.org/pub/release-101/gtf/homo_sapiens/Homo_sapiens.GRCh38.101.chr.gtf.gz > data/snk/GenomeAnnotation/Homo_sapiens.GRCh38.101.chr.gtf.gz
+		gunzip data/snk/GenomeAnnotation/Homo_sapiens.GRCh38.101.chr.gtf.gz > {output}
 		"""
 
 ### Mapping des fichiers FASTQ grâce à l'index précédemment créé avec STAR
@@ -144,15 +140,33 @@ rule index_BAM:
 ### Comptage des reads avec featureCounts
 rule count_reads: 
         input:
-                annot="data/snk/GenomeAnnotation/Homo_sapiens.GRCh38.101.chr.gtf", bam_files=expand("data/snk/bam/{SRAID}.bam",SRAID=sra_id_list),bai_files=expand("data/snk/bam/{SRAID}.bam.bai",SRAID=sra_id_list)
+                gtf_file="data/snk/GenomeAnnotation/Homo_sapiens.GRCh38.101.chr.gtf", bam=expand("data/snk/bam/{SRAID}.bam",SRAID=sra_id_list)
                 
         output:
-                "results/Snk/counts/gene_output.counts"
+                "results/Snk/counts/counts.txt", "results/Snk/counts/output.counts.summary"
         threads: 16
         singularity: 
         	"docker://evolbioinfo/subread:v2.0.1"
         shell:
-                "featureCounts -p -T {threads} -t gene -g gene_id -s 0 -a {input.annot} -o {output} {input.bam_files}"
+                """
+                featureCounts -T {threads} -t gene -g gene_id -s 0 -a {input.gtf_file} -o results/counts/output_gene.counts {input.bam}
+                """
+
+### Comptage des exons avec featureCounts
+rule count_exons: 
+        input:
+                gtf_file="data/snk/GenomeAnnotation/Homo_sapiens.GRCh38.101.chr.gtf", bam=expand("data/snk/bam/{SRAID}.bam",SRAID=sra_id_list)
+                
+        output:
+                "exons_counts.txt", "exons_counts.counts.summary"
+        threads: 16
+        singularity: 
+        	"docker://evolbioinfo/subread:v2.0.1"
+        shell:
+                """
+                featureCounts -T {threads} -f -s 0 -a ${gtf_file} -o results/counts/exons_counts.counts ${bam}
+                """
+
 
 
 ### Analyse de l'expression différentielle avec un script R et génération des graphes et tableaux

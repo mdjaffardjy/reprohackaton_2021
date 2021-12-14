@@ -112,11 +112,11 @@ process make_STAR_index {
     file (genome) from genome_hum.collect()
 
     output:
-    path "ref" into genome_idx
+    path "data/ref/" into genome_idx
 
     script:
     """
-    STAR --runThreadN ${task.cpus} --runMode genomeGenerate --genomeDir ref/ --genomeFastaFiles ${genome}
+    STAR --runThreadN ${task.cpus} --runMode genomeGenerate --genomeDir data/ref/ --genomeFastaFiles ${genome}
     """
 }
 
@@ -161,7 +161,7 @@ process map_FASTQ {
         --genomeLoad NoSharedMemory \
         --limitBAMsortRAM ${task.memory.toBytes()} \
         --outFileNamePrefix ${sar} 
-        >${sar}.bam    
+        > data/bam/${sar}.bam    
     """
 }
 
@@ -173,11 +173,11 @@ process index_BAM {
     file bam from mapped_fq_1
  
     output:
-    file "*.bai" into bam_index
+    tuple file("${bam}.bai"), file("${bam}") into indexedBAM_1, indexedBAM_2
  
     script:
     """
-    samtools index ${bam}
+    samtools index ${bam} 
     """
 }
 
@@ -187,7 +187,7 @@ process count_reads{
     
     input:
     file gtf_file from gtf
-    file bam from mapped_fq_2.collect()
+    file bam from indexedBAM_1.flatten().filter(~/.*bam$/).collect()
     
     output:
     file "counts.txt" into file_count
@@ -195,7 +195,25 @@ process count_reads{
     
     script:
     """ 
-     featureCounts ${bam} -p -T ${task.cpus} -t gene -g gene_id -s 0 -a ${gtf} -o counts.txt 
+     featureCounts -T ${task.cpus} -t gene -g gene_id -s 0 -a ${gtf_file} -o results/counts/output_gene.counts ${bam}
+    """
+} 
+
+// Comptage des exons avec featureCounts
+process count_exons{
+    publishDir "results/counts/"
+    
+    input:
+    file gtf_file from gtf
+    file bam from indexedBAM_2.flatten().filter(~/.*bam$/).collect()
+    
+    output:
+    file "exons_counts.txt" into exons_file_count
+    file "exons_counts.counts.summary" into exons_logsFileCount
+    
+    script:
+    """ 
+      featureCounts -T ${task.cpus} -f -s 0 -a ${gtf_file} -o results/counts/exons_counts.counts ${bam} 
     """
 } 
 
@@ -208,6 +226,7 @@ process counts_analysis{
 	
 	input:
 	file count from file_count	
+	file "exons_counts.txt" from exons_file_count
 	
 	output:
 	tuple file("results.txt"), file("*.csv"), file("analyse*") into chann_end
