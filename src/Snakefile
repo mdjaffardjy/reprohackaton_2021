@@ -158,7 +158,7 @@ rule count_exons:
                 gtf_file="data/snk/GenomeAnnotation/Homo_sapiens.GRCh38.101.chr.gtf", bam=expand("data/snk/bam/{SRAID}.bam",SRAID=sra_id_list)
                 
         output:
-                "exons_counts.txt", "exons_counts.counts.summary"
+                "results/Snk/counts/exons_counts.txt", "results/Snk/counts/exons_counts.counts.summary"
         threads: 16
         singularity: 
         	"docker://evolbioinfo/subread:v2.0.1"
