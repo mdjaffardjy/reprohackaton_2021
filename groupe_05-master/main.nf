@@ -229,6 +229,18 @@ process countingReads {
 }
 
 
+process exon_count{
+        input:
+        	file bam_index from channel_bam_index.collect()
+    file bam from bam_channel2.collect()
+    val gtf from channel_gtf
+        output:
+                file "matrice_exonsCounts.txt" into channel_exonsCounts
+        shell:
+                "featureCounts -p -T ${task.cpus} -t exon -g exon_id -s 0 -a ${gtf} -o matrice_exonsCounts.txt ${bam}"
+
+}
+
 metaData_channel = Channel.fromPath('./metaData.txt')
 
 process statAnalysis {
@@ -241,6 +253,7 @@ process statAnalysis {
     
     input:
     file countData from channel_featureCounts
+    file countExon from channel_exonsCounts
     file metaData from metaData_channel
     
     output:
