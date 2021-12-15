@@ -64,7 +64,7 @@ rule indexation_genome: # Index human genome and create many output files (use S
 	input:
 		"ref/ref.fa"	
 	output:
-		"ref/chrLength.txt","ref/chrName.txt","ref/chrNameLength.txt","ref/chrStart.txt","ref/genomeParameters.txt","ref/Genome","ref/SA","ref/SAindex"
+		"ref/chrLength.txt"
 	threads: 16
 	singularity: 
 		"docker://evolbioinfo/star:v2.7.6a"
