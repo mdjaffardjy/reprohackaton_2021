@@ -126,7 +126,7 @@ process map_FASTQ {
     path ref from genome_idx
  
     output:
-    file "${sar}.bam" into mapped_fq_1, mapped_fq_2
+    file "${sar}.bam" into mapped_fq
  
     script:
     """
@@ -151,7 +151,7 @@ process index_BAM {
     publishDir "data/bam_index/"
 
     input:
-    file bam from mapped_fq_1
+    file bam from mapped_fq
  
     output:
     tuple file("${bam}.bai"), file("${bam}") into indexedBAM_1, indexedBAM_2
