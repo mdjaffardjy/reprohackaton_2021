@@ -142,7 +142,7 @@ process map_FASTQ {
         --genomeLoad NoSharedMemory \
         --limitBAMsortRAM ${task.memory.toBytes()} \
         --outFileNamePrefix ${sar} 
-        > data/bam/${sar}.bam    
+        > ${sar}.bam    
     """
 }
 
