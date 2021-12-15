@@ -125,7 +125,7 @@ rule exon_count: # Counts the number of reads mapped on the exons, to get the le
 ### PART 3 : STATISTICAL ANALYSIS
 rule statsAnalysis: # Statistical analysis on the samples, using the counting of reads per gene done in the gene_count rule.
 	input:
-		"SraRunTable.txt","AnalyseGenes.R","gene_output.counts"
+		"gene_output.counts"
 	output:
 		"DE_analysis.txt", "DE_genes_comparison.txt"
 	container:
